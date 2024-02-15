@@ -1,0 +1,16 @@
+table button{
+    padding: 10px;
+    background-color: #0f5f94;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 5px;
+    padding: 5px 10px;
+
+}
+
+table button:hover {
+    background-color: #0d3e88;
+}
+

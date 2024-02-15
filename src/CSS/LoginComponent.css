@@ -1,0 +1,40 @@
+h1{
+    text-align: center;
+    color: #0a123d;
+    margin-top: 30px;
+}
+.LoginForm form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    width: 350px;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+    margin: 10px;
+}
+  
+.LoginForm button {
+    padding: 10px;
+    background-color: #0a123d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 5px;
+    padding: 10px;
+}
+  
+button:hover {
+    background-color: #0d2a88;
+}
+
+a{
+    text-decoration: none;
+    color: #0e88ec;
+}
