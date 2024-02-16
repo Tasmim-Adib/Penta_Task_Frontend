@@ -2,33 +2,30 @@ import React,{useState, useEffect} from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
 
-export default function ConfirmMailComponent(){
+export default function MailForPasswordReset(){
 
     const { email } = useParams();
     const [data, setData] = useState(null);
     const [retrieveCode, setRetrieveCode] = useState(null);
     const [error, setError] = useState("");
-
     const navigate = useNavigate();
+
     useEffect(() => {
         
         const fetchData = async () => {
-          try {
-            const retrieveCodeResponse = await axios.get(`http://localhost:8080/api/auth/mail/retrieve/key/${email}`);
-            const retrieveCodeResponseData = retrieveCodeResponse.data;
-            setRetrieveCode(retrieveCodeResponseData);
-
-            const response = await axios.get(`http://localhost:8080/api/auth/temp/get/temporary/user/${email}`);
-            const responseData = response.data;
-            setData(responseData);
-            
-          } catch (error) {
-            console.error('Error fetching data:', error.message);
-          }
+            try {
+                const retrieveCodeResponse = await axios.get(`http://localhost:8080/api/auth/mail/retrieve/key/${email}`);
+                const retrieveCodeResponseData = retrieveCodeResponse.data;
+                setRetrieveCode(retrieveCodeResponseData);
+                
+            } catch (error) {
+                console.error('Error fetching data:', error.message);
+            }
         };
     
         fetchData();
     }, [email]);
+
 
     const [inputValues, setInputValues] = useState({
         code : ''
@@ -42,39 +39,28 @@ export default function ConfirmMailComponent(){
         }));
     };
 
+    const handleDelete = async () =>{
+        try{
+            const response = await axios.delete(`http://localhost:8080/api/auth/mail/delete/${email}`)
+            console.log("email deleted");
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
         const codeInInt = parseInt(inputValues.code)
         if(codeInInt === retrieveCode.key){
-            const payload = {
-                email : data.email,
-                password : data.password,
-                name : data.name,
-                phone : data.phone 
-            };
-    
-            axios({
-                url : 'http://localhost:8080/api/auth/register',
-                method : "POST",
-                data : payload
-            }).then(response => {
-                console.log('Data posted successfully:', response.data);
-                navigate('/wait/until/confirm/role');
-                
-            })
-            .catch(error => {
-                console.error('Error posting data:', error);
-                setError(error)
-                
-            });
+            handleDelete();
+            navigate(`/reset/password/${email}`);
         }
         else{
-            
+            setError('Code is not matched');
         }
         
     };
-
-    return( 
+    return(
         <div>
             <h1>Penta Project Task</h1>
             <h3 style={{textAlign : 'center'}}>A code has been sent to your mail. Please give the code</h3>

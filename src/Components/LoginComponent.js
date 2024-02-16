@@ -17,44 +17,69 @@ export default function LoginComponent(){
     const [user, setUser] = useState(null);
     const [student, setStudent] = useState(null);
     const [teacher, setTeacher] = useState(null);
+    
+    const fetchData = async (decoded) => {
+        try {
+            const retrieveUser = await axios.get(`http://localhost:8080/api/auth/find/${decoded.sub}`);
+            const userData = retrieveUser.data;
+            setUser(userData);
+            console.log(user);
+            if(user.role_id === 1){
+
+            }
+            else if(user.role_id === 2){
+            
+                if(user.user_id){
+                    try{
+                        console.log(user.user_id);
+                        const retrieveStudent = await axios.get(`http://localhost:8080/api/auth/student/get/${user.user_id}`);
+                        const studentData = retrieveStudent.data;
+                        
+                        setStudent(studentData)
+                        navigate(`/student/${student.user_id}`)
+                    
+                    }catch(error){
+                        console.log(error);
+                    }
+                    
+                }
+                else{
+                    navigate(`/register/student/${user.user_id}`)
+                }
+                
+            }
+            else{
+                if(user.user_id){
+                    try{
+                        const retrieveTeacher = await axios.get(`http://localhost:8080/api/auth/teacher/get/${user.user_id}`)
+                        const teacherData = retrieveTeacher.data;
+                        setTeacher(teacherData);
+                        navigate(`/teacher/${teacher.user_id}`)
+                    }
+                    catch(error){
+                        console.log(error);
+                    }
+                }
+                else{
+                    navigate(`/register/teacher/${user.user_id}`)
+                }
+                
+            }
+          
+          
+        } catch (error) {
+            console.error('Error fetching data:', error.message);
+        }
+    };
 
     useEffect(() =>{
         const token = localStorage.getItem('Token');
         if(token){
             const decoded = jwtDecode(token);
 
-        const fetchData = async () => {
-            try {
-                const retrieveUser = await axios.get(`http://localhost:8080/api/auth/find/${decoded.sub}`);
-                const userData = retrieveUser.data;
-                setUser(userData);
-    
-                if(user.role_id === 1){
-
-                }
-                else if(user.role_id === 2){
-                
-                    const retrieveStudent = await axios.get(`http://localhost:8080/api/auth/student/get/${user.user_id}`);
-                    const studentData = retrieveStudent.data;
-                    setStudent(studentData)
-                    
-                    student.user_id ? navigate(`/student/${student.user_id}`) : navigate(`/register/student/${student.user_id}`);
-                }
-                else{
-                    const retrieveTeacher = await axios.get(`http://localhost:8080/api/auth/teacher/get/${user.user_id}`)
-                    const teacherData = retrieveTeacher.data;
-                    setTeacher(teacherData);
-                    teacher.user_id ? navigate(`/teacher/${teacher.user_id}`) : navigate(`/register/teacher/${teacher.user_id}`);
-                }
-              
-              
-            } catch (error) {
-                console.error('Error fetching data:', error.message);
-            }
-          };
-          fetchData();
+            fetchData(decoded);
         }
-    },[user, student, teacher, navigate])
+    },[user])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -79,8 +104,10 @@ export default function LoginComponent(){
         }).then(response => {
             if(response.data.token){
                 localStorage.setItem('Token', response.data.token);
-                console.log(response.data.token)
-                navigate('/wait/until/confirm/role');
+                const decoded = jwtDecode(response.data.token);
+                fetchData(decoded);
+                
+                
             }
             else{
                 setError(response.data.error);

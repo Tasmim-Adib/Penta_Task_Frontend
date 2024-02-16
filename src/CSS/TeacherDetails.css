@@ -1,0 +1,20 @@
+.Teacher-Details{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Teacher-Details button{
+    padding: 10px;
+    background-color: #0a123d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.Teacher-Details button:hover {
+    background-color: #0d2a88;
+}

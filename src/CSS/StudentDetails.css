@@ -1,0 +1,26 @@
+.student-Details{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.student-details-buton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+}
+
+.student-details-buton button {
+    padding: 10px;
+    background-color: #0a123d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 5px;
+    padding: 10px;
+}
+  
+button:hover {
+    background-color: #0d2a88;
+}

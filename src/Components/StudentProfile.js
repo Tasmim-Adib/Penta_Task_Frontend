@@ -1,9 +1,8 @@
 import React , {useState, useEffect}from "react";
-import { useParams } from "react-router-dom";
-import StudentNav from "./StudentNav";
+import { useParams, Link } from "react-router-dom";
 import StudentDetails from "./StudentDetails";
 import axios from "axios";
-
+import '../CSS/StudentNav.css'
 export default function StudentProfile(){
 
     const [student, setStudent] = useState(null);
@@ -28,7 +27,14 @@ export default function StudentProfile(){
     return(
         <div>
             <h1>Penta Project Task</h1>
-            <StudentNav/>
+            <div>
+                <ul className="student-nav">
+                    <li className="student-nav-list"><Link to={`/student/${user_id}`}>Profile</Link></li>
+                    <li className="student-nav-list"><Link to={`/request/${user_id}`}>You Requested</Link></li>
+                    <li className="student-nav-list"><Link to={`/available/for/${user_id}`}>Available Teacher</Link></li>
+                </ul>
+                
+            </div>
             <StudentDetails student = {student}/>
         </div>
     )

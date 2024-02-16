@@ -1,0 +1,21 @@
+.student-nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.student-nav-list{
+    list-style: none;
+    text-decoration: none;
+}
+.student-nav-list a:hover{
+    color: #083f5f;
+}
+
+.student-nav-list a:active{
+    text-decoration: underline;
+}
+.active {
+    text-decoration: underline;
+  }
