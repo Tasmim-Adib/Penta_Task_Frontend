@@ -19,6 +19,8 @@ import TeacherNotRequested from './Components/TeacherNotRequested';
 import TeacherUpdate from './Components/TeacherUpdate';
 import TeacherRequests from './Components/TeacherRequests';
 import RequestedStudent from './Components/RequestedStudent';
+import TeacherStudentList from './Components/TeacherStudentList';
+import MyStudent from './Components/MyStudent';
 
 function App() {
   return (
@@ -41,7 +43,9 @@ function App() {
         <Route path='/teacher/not/requested/:student_user_id/:teacher_user_id' element={<TeacherNotRequested/>}/>
         <Route path='/teacher/update/:user_id' element={<TeacherUpdate/>}/>
         <Route path='/teacher/myrequest/:user_id' element={<TeacherRequests/>}/>
+        <Route path='/teacher/mystudent/:user_id' element={<TeacherStudentList/>}/>
         <Route path='/teacher/request/:teacher_user_id/:student_user_id' element={<RequestedStudent/>}/>
+        <Route path='/teacher/student/:teacher_user_id/:student_user_id' element={<MyStudent/>}/>
       </Routes>
     </Router>
     

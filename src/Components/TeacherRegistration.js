@@ -28,9 +28,13 @@ export default function TeacherRegistration(){
         };
 
         axios({
-            url : `http://localhost:8080/api/auth/teacher/save/${user_id}`,
+            url : `http://localhost:8080/teacher/save/${user_id}`,
             method : "POST",
-            data : payload
+            data : payload,
+            headers: {
+                'Content-Type' : 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+            },
         }).then(response => {
             console.log('Data posted successfully:', response.data);
             //navigate(`/student/${user_id}`);

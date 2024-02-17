@@ -10,7 +10,12 @@ export default function TeacherRequests(){
         const fetchData = async() =>{
             if(user_id){
                 try{
-                    const response = await fetch(`http://localhost:8080/api/auth/student/get/request/advisor/${user_id}`);
+                    const response = await fetch(`http://localhost:8080/student/get/request/advisor/${user_id}`,{
+                        headers: {
+                            'Content-Type' : 'application/json',
+                            Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                        },
+                    });
               
                     const responseData = await response.json();
                     setData(responseData);
@@ -38,7 +43,7 @@ export default function TeacherRequests(){
                     <li className="student-nav-list"><Link to={`/teacher/mystudent/${user_id}`}>My Students</Link></li>
                     <li className="student-nav-list"><Link to={`/teacher/myrequest/${user_id}`}>Requests</Link></li>
                 </ul>
-                
+                <h2 style={{textAlign : 'center'}}>My Requests</h2>
             </div>
             <table style={{ margin: 'auto' }}>
                 <thead>

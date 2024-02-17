@@ -18,21 +18,30 @@ export default function LoginComponent(){
     const [student, setStudent] = useState(null);
     const [teacher, setTeacher] = useState(null);
     
-    const fetchData = async (decoded) => {
+    const fetchData = async (token) => {
+
+        const decoded = jwtDecode(token);
+
+        console.log(token)
         try {
             const retrieveUser = await axios.get(`http://localhost:8080/api/auth/find/${decoded.sub}`);
             const userData = retrieveUser.data;
             setUser(userData);
-            console.log(user);
+            
             if(user.role_id === 1){
-
+                navigate('/admin');
             }
             else if(user.role_id === 2){
             
                 if(user.user_id){
                     try{
                         console.log(user.user_id);
-                        const retrieveStudent = await axios.get(`http://localhost:8080/api/auth/student/get/${user.user_id}`);
+                        const retrieveStudent = await axios.get(`http://localhost:8080/student/get/${user.user_id}`,{
+                            headers: {
+                                'Content-Type' : 'application/json',
+                                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                            },
+                        });
                         const studentData = retrieveStudent.data;
                         
                         setStudent(studentData)
@@ -51,7 +60,7 @@ export default function LoginComponent(){
             else{
                 if(user.user_id){
                     try{
-                        const retrieveTeacher = await axios.get(`http://localhost:8080/api/auth/teacher/get/${user.user_id}`)
+                        const retrieveTeacher = await axios.get(`http://localhost:8080/teacher/get/${user.user_id}`)
                         const teacherData = retrieveTeacher.data;
                         setTeacher(teacherData);
                         navigate(`/teacher/${teacher.user_id}`)
@@ -75,9 +84,8 @@ export default function LoginComponent(){
     useEffect(() =>{
         const token = localStorage.getItem('Token');
         if(token){
-            const decoded = jwtDecode(token);
 
-            fetchData(decoded);
+            fetchData(token);
         }
     },[user])
 
@@ -104,8 +112,7 @@ export default function LoginComponent(){
         }).then(response => {
             if(response.data.token){
                 localStorage.setItem('Token', response.data.token);
-                const decoded = jwtDecode(response.data.token);
-                fetchData(decoded);
+                fetchData(response.data.token);
                 
                 
             }

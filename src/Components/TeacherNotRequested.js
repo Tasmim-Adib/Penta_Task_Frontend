@@ -12,7 +12,12 @@ export default function TeacherNotRequested(){
         const fetchData = async () => {
             if(teacher_user_id){
                 try {
-                    const retrieveTeacher = await axios.get(`http://localhost:8080/api/auth/teacher/get/${teacher_user_id}`);
+                    const retrieveTeacher = await axios.get(`http://localhost:8080/teacher/get/${teacher_user_id}`,{
+                        headers: {
+                            'Content-Type' : 'application/json',
+                            Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                        },
+                    });
                     const teacherData = retrieveTeacher.data;
                     setTeacher(teacherData)
                     
@@ -38,9 +43,13 @@ export default function TeacherNotRequested(){
             teacher_user_id : teacher_user_id
         }
         axios({
-            url : 'http://localhost:8080/api/auth/studTeacherReq/save',
+            url : 'http://localhost:8080/studTeacherReq/save',
             method : "POST",
-            data : payload
+            data : payload,
+            headers: {
+                'Content-Type' : 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+            },
         }).then(response => {
             console.log('Data posted successfully:', response.data);
             setError(response.data);

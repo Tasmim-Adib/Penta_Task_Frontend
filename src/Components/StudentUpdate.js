@@ -12,7 +12,12 @@ export default function StudentUpdate(){
         const fetchData = async () => {
             try {
                 
-                const response = await axios.get(`http://localhost:8080/api/auth/student/get/${user_id}`);
+                const response = await axios.get(`http://localhost:8080/student/get/${user_id}`,{
+                    headers: {
+                        'Content-Type' : 'application/json',
+                        Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                    },
+                });
                 const data = response.data;
                 setDefaultValue(data);
                 
@@ -44,9 +49,13 @@ export default function StudentUpdate(){
         };
 
         axios({
-            url : `http://localhost:8080/api/auth/student/update/${defaultValue.user_id}`,
+            url : `http://localhost:8080/student/update/${defaultValue.user_id}`,
             method : "PUT",
-            data : payload
+            data : payload,
+            headers: {
+                'Content-Type' : 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+            },
         }).then(response => {
             console.log('Data Updated successfully:', response.data);
             setResponseMessage(response.data)

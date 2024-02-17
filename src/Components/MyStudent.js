@@ -2,7 +2,7 @@ import React,{useEffect,useState} from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function RequestedStudent(){
+export default function MyStudent(){
     const [student, setStudent] = useState(null);
     const {teacher_user_id, student_user_id} = useParams();
     const [error, setError] = useState('');
@@ -33,48 +33,20 @@ export default function RequestedStudent(){
         fetchData();
     }, [student_user_id]);
 
-    const handleAccept = (e) =>{
+
+    const handleRemoveStudent = (e) =>{
         e.preventDefault();
-        const payload = {
-            advisor : teacher_user_id
-        }
+
         axios({
-            url : `http://localhost:8080/student/update/advisor/${student_user_id}`,
+            url : `http://localhost:8080/student/remove/advisor/${student_user_id}`,
             method : "PUT",
-            data : payload,
-            headers : {
-                Authorization : 'Bearer ' + localStorage.getItem('Token')
-            }
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+            },
+
         }).then(response => {
-            console.log('Data posted successfully:', response.data);
-            setError('Added in your list')
-            
-        })
-        .catch(error => {
-            console.error('Error posting data:', error);
-            setError(error)
-            
-        });
-    }
-
-    const handleDismiss = (e) =>{
-        e.preventDefault();
-
-        const payload = {
-            student_user_id : student_user_id
-
-        }
-
-        axios({
-            url : `http://localhost:8080/studTeacherReq/delete/${teacher_user_id}`,
-            method : "DELETE",
-            data : payload,
-            headers : {
-                Authorization : 'Bearer ' + localStorage.getItem('Token')
-            }
-        }).then(response => {
-            console.log('Request Deleted successfully:', response.data);
-            setError('Delete From your Requested list')
+            console.log('Request Updated successfully:', response.data);
+            setError('Removed From your list')
             
         })
         .catch(error => {
@@ -86,7 +58,8 @@ export default function RequestedStudent(){
     }
 
     return(
-        <div className="student-Details">            
+        <div className="student-Details">   
+            
             {student ? (
                 <div>
                     <h1>Penta Project Task</h1>
@@ -97,10 +70,7 @@ export default function RequestedStudent(){
                     <h3>Department Name : {student.department_name}</h3>
                     <h3>Student ID : {student.student_id}</h3>
                     <h3>Batch No : {student.batch_no}</h3>
-                    <div className="student-details-buton">
-                        <button style={{margin : '10px'}} onClick={handleAccept}>Accept</button>
-                        <button style={{margin : '10px'}} onClick={handleDismiss}>Dismiss</button>
-                    </div>
+                    <button style={{margin : '10px'}} onClick={handleRemoveStudent}>Remove</button>
                     <p>{error}</p>
                 </div>
             ):<h2>Teacher not found</h2>}

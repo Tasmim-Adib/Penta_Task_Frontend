@@ -37,7 +37,6 @@ const TeacherDetails = ({teacher}) =>{
         <div className="student-Details">            
             {teacher ? (
                 <div>
-                    <h2>Your Profile</h2>
                     <h3>Name : {teacher.name}</h3>
                     <h3>Email : {teacher.email}</h3>
                     <h3>Phone : {teacher.phone}</h3>

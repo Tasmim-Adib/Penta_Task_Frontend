@@ -31,9 +31,13 @@ export default function StudentRegister(){
         };
 
         axios({
-            url : `http://localhost:8080/api/auth/student/save/${user_id}`,
+            url : `http://localhost:8080/student/save/${user_id}`,
             method : "POST",
-            data : payload
+            data : payload,
+            headers: {
+                'Content-Type' : 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+            },
         }).then(response => {
             console.log('Data posted successfully:', response.data);
             navigate(`/student/${user_id}`);

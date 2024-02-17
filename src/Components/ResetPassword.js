@@ -47,7 +47,10 @@ export default function ResetPassword(){
         axios({
             url : `http://localhost:8080/api/auth/reset/password/${email}`,
             method : "PUT",
-            data : payload
+            data : payload,
+            headers : {
+                Authorization : 'Bearer ' + localStorage.getItem('Token')
+            }
         }).then(response => {
             console.log('Data posted successfully:', response.data);
             setError('Password Reset Successful');

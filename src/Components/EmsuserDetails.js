@@ -16,12 +16,16 @@ const EmsuserDetails = () => {
 
                 let url = '';
                 if(role_id === 2){
-                    url =  `http://localhost:8080/api/auth/student/get/${user_id}`
+                    url =  `http://localhost:8080/student/get/${user_id}`
                 }
                 else{
-                    url = `http://localhost:8080/api/auth/teacher/get/${user_id}`
+                    url = `http://localhost:8080/teacher/get/${user_id}`
                 }
-                const response = await fetch(url);
+                const response = await fetch(url, {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                    },
+                });
                 
                 
                 if (!response.ok) {

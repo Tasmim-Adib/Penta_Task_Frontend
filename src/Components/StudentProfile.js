@@ -12,7 +12,12 @@ export default function StudentProfile(){
         
         const fetchData = async () => {
           try {
-            const retrieveStudent = await axios.get(`http://localhost:8080/api/auth/student/get/${user_id}`);
+            const retrieveStudent = await axios.get(`http://localhost:8080/student/get/${user_id}`,{
+              headers: {
+                  'Content-Type' : 'application/json',
+                  Authorization: 'Bearer ' + localStorage.getItem('Token'),
+              },
+          });
             const studentData = retrieveStudent.data;
             setStudent(studentData)
             

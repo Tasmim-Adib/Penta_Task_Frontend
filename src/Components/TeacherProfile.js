@@ -12,7 +12,12 @@ export default function TeacherProfile(){
         
         const fetchData = async () => {
           try {
-            const retrieveTeacher = await axios.get(`http://localhost:8080/api/auth/teacher/get/${user_id}`);
+            const retrieveTeacher = await axios.get(`http://localhost:8080/teacher/get/${user_id}`,{
+              headers: {
+                'Content-Type' : 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+              },
+            });
             const teacherData = retrieveTeacher.data;
             setTeacher(teacherData)
             
@@ -32,7 +37,7 @@ export default function TeacherProfile(){
                     <li className="student-nav-list"><Link to={`/teacher/mystudent/${user_id}`}>My Students</Link></li>
                     <li className="student-nav-list"><Link to={`/teacher/myrequest/${user_id}`}>Requests</Link></li>
                 </ul>
-                
+                <h2 style={{textAlign : 'center'}}>My Profile</h2>
             </div>
             <TeacherDetails teacher = {teacher}></TeacherDetails>
         </div>
