@@ -73,7 +73,7 @@ export default function MyStudent(){
                     <button style={{margin : '10px'}} onClick={handleRemoveStudent}>Remove</button>
                     <p>{error}</p>
                 </div>
-            ):<h2>Teacher not found</h2>}
+            ):<h2>Student not found</h2>}
             
         </div>
     )

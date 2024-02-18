@@ -33,6 +33,12 @@ const StudentDetails = ({student}) => {
             
         });
     }
+
+    const handleLogout = (e) =>{
+        e.preventDefault();
+        localStorage.removeItem('Token')
+        navigate('/')
+    }
     return(
         <div className="student-Details">
             {student ? (
@@ -48,7 +54,9 @@ const StudentDetails = ({student}) => {
                     <div className="student-details-buton">
                         <button style={{margin : '10px'}} onClick={handleUpdateProfile}>Update Profile</button>
                         <button style={{margin : '10px'}} onClick={handleResetPassword}>Reset Password</button>
+                        <button onClick={handleLogout}>Logout</button>
                     </div>
+                    
                 </div>
                 
             ):<h2>Student not found</h2>}

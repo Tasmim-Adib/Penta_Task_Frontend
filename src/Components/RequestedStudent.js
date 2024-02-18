@@ -103,7 +103,7 @@ export default function RequestedStudent(){
                     </div>
                     <p>{error}</p>
                 </div>
-            ):<h2>Teacher not found</h2>}
+            ):<h2>Student not found</h2>}
             
         </div>
     )

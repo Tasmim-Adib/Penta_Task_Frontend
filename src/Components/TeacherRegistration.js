@@ -37,13 +37,18 @@ export default function TeacherRegistration(){
             },
         }).then(response => {
             console.log('Data posted successfully:', response.data);
-            //navigate(`/student/${user_id}`);
+            navigate(`/teacher/${user_id}`);
             
         })
         .catch(error => {
             console.error('Error posting data:', error);
             
         });
+    }
+
+    const handleGoBack = (e) =>{
+        e.preventDefault();
+        navigate('/');
     }
     return(
         <div>
@@ -53,7 +58,6 @@ export default function TeacherRegistration(){
                     <input type="text" name="faculty_name" placeholder='Faculty Name' value={inputValues.faculty_name} onChange={handleInputChange}/>
                     <input type="text" name="designation" placeholder='Designation' value={inputValues.designation} onChange={handleInputChange}/>
                     <button type="submit">Save</button>
-                    
                 </form>
             </div>
         </div>

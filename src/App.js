@@ -21,6 +21,7 @@ import TeacherRequests from './Components/TeacherRequests';
 import RequestedStudent from './Components/RequestedStudent';
 import TeacherStudentList from './Components/TeacherStudentList';
 import MyStudent from './Components/MyStudent';
+import UpdateEMSUser from './Components/UpdateEMSUser';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Route path='/teacher/mystudent/:user_id' element={<TeacherStudentList/>}/>
         <Route path='/teacher/request/:teacher_user_id/:student_user_id' element={<RequestedStudent/>}/>
         <Route path='/teacher/student/:teacher_user_id/:student_user_id' element={<MyStudent/>}/>
+        <Route path='/admin/update/:user_id' element={<UpdateEMSUser/>}/>
       </Routes>
     </Router>
     

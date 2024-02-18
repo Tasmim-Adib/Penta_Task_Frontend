@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import '../CSS/LoginComponent.css';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -13,82 +13,7 @@ export default function LoginComponent(){
         email: '',
         password: ''
     });
-
-    const [user, setUser] = useState(null);
-    const [student, setStudent] = useState(null);
-    const [teacher, setTeacher] = useState(null);
     
-    const fetchData = async (token) => {
-
-        const decoded = jwtDecode(token);
-
-        console.log(token)
-        try {
-            const retrieveUser = await axios.get(`http://localhost:8080/api/auth/find/${decoded.sub}`);
-            const userData = retrieveUser.data;
-            setUser(userData);
-            
-            if(user.role_id === 1){
-                navigate('/admin');
-            }
-            else if(user.role_id === 2){
-            
-                if(user.user_id){
-                    try{
-                        console.log(user.user_id);
-                        const retrieveStudent = await axios.get(`http://localhost:8080/student/get/${user.user_id}`,{
-                            headers: {
-                                'Content-Type' : 'application/json',
-                                Authorization: 'Bearer ' + localStorage.getItem('Token'),
-                            },
-                        });
-                        const studentData = retrieveStudent.data;
-                        
-                        setStudent(studentData)
-                        navigate(`/student/${student.user_id}`)
-                    
-                    }catch(error){
-                        console.log(error);
-                    }
-                    
-                }
-                else{
-                    navigate(`/register/student/${user.user_id}`)
-                }
-                
-            }
-            else{
-                if(user.user_id){
-                    try{
-                        const retrieveTeacher = await axios.get(`http://localhost:8080/teacher/get/${user.user_id}`)
-                        const teacherData = retrieveTeacher.data;
-                        setTeacher(teacherData);
-                        navigate(`/teacher/${teacher.user_id}`)
-                    }
-                    catch(error){
-                        console.log(error);
-                    }
-                }
-                else{
-                    navigate(`/register/teacher/${user.user_id}`)
-                }
-                
-            }
-          
-          
-        } catch (error) {
-            console.error('Error fetching data:', error.message);
-        }
-    };
-
-    useEffect(() =>{
-        const token = localStorage.getItem('Token');
-        if(token){
-
-            fetchData(token);
-        }
-    },[user])
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setInputValues((prevValues) => ({
@@ -97,37 +22,77 @@ export default function LoginComponent(){
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) =>{
         e.preventDefault();
         const payload = {
             email : inputValues.email,
             password : inputValues.password
         };
 
-        axios({
-            url : 'http://localhost:8080/api/auth/authenticate',
-            method : "POST",
-            data : payload
-
-        }).then(response => {
+        try{
+            const response = await axios.post('http://localhost:8080/api/auth/authenticate', payload);
             if(response.data.token){
-                localStorage.setItem('Token', response.data.token);
-                fetchData(response.data.token);
+                localStorage.setItem('Token',response.data.token)
+
+                const decodedToken = jwtDecode(response.data.token);
+
                 
+                const getUserDataResponse = await axios.get(`http://localhost:8080/api/auth/find/${decodedToken.sub}`);
+
                 
+                if(getUserDataResponse.data.role_id === 1){
+                    navigate('/admin')
+                }
+
+                else if(getUserDataResponse.data.role_id === 2){
+                    try{
+                        const getStudent = await axios.get(`http://localhost:8080/student/get/${getUserDataResponse.data.user_id}`,{
+                            headers:{
+                                Authorization : 'Bearer ' + localStorage.getItem('Token')
+                            }
+                        })
+                        console.log(getStudent)
+                        if(getStudent.data.student_id){
+                            navigate(`/student/${getUserDataResponse.data.user_id}`);
+                        }
+                        else{
+                            navigate(`/register/student/${getUserDataResponse.data.user_id}`);
+                        }
+                    }
+                    catch(error){
+                        navigate(`/register/student/${getUserDataResponse.data.user_id}`);
+                        setError(error.message);
+                    }
+                }
+                else{
+                    try{
+                        const getTeacher = await axios.get(`http://localhost:8080/teacher/get/${getUserDataResponse.data.user_id}`,{
+                            headers : {
+                                Authorization : 'Bearer ' + localStorage.getItem('Token')
+                            }
+                        })
+                        if(getTeacher.data.designation){
+                            navigate(`/teacher/${getUserDataResponse.data.user_id}`);
+                        }
+                        else{
+                            navigate(`/register/teacher/${getUserDataResponse.data.user_id}`);
+                        }
+                    }
+                    catch(error){
+                        navigate(`/register/teacher/${getUserDataResponse.data.user_id}`);
+                        setError(error.message);
+                    }
+                }
             }
             else{
-                setError(response.data.error);
+                setError('response.data.error');
             }
-            
-            
-        })
-        .catch(error => {
-            
-            setError(error.message)
-            
-        });
-    };
+        }
+        catch(error){
+
+        }
+    }
+    
 
     return(
         <div>
