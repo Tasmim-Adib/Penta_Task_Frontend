@@ -12,14 +12,22 @@ export default function StudentUpdate(){
         const fetchData = async () => {
             try {
                 
-                const response = await axios.get(`http://localhost:8080/student/get/${user_id}`,{
-                    headers: {
-                        'Content-Type' : 'application/json',
-                        Authorization: 'Bearer ' + localStorage.getItem('Token'),
-                    },
+                const response = await fetch(`http://localhost:8080/student/get/${user_id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    
+                },
+                credentials: 'include', 
                 });
-                const data = response.data;
-                setDefaultValue(data);
+            
+                if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+            
+                const responseData = await response.json();
+                setDefaultValue(responseData)
+                console.log('Data:', responseData);
                 
             } catch (error) {
                 console.error('Error fetching data:', error.message);
@@ -48,22 +56,30 @@ export default function StudentUpdate(){
             student_id : defaultValue.student_id            
         };
 
-        axios({
-            url : `http://localhost:8080/student/update/${defaultValue.user_id}`,
-            method : "PUT",
-            data : payload,
+        fetch(`http://localhost:8080/student/update/${defaultValue.user_id}`, {
+            method: 'PUT',
             headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                'Content-Type': 'application/json',
             },
-        }).then(response => {
-            console.log('Data Updated successfully:', response.data);
-            setResponseMessage(response.data)
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+        })
+        .then((data) => {
+            console.log('Data posted successfully:', data);
+            setResponseMessage('Updated Successfully')
+            
+        })
+        .catch((error) => {
             console.error('Error posting data:', error);
-            setResponseMessage(error)
+            setResponseMessage(error.message)
         });
+        
     }
 
     const handleBackToProfile =(e) =>{

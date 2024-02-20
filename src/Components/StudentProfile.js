@@ -1,5 +1,5 @@
 import React , {useState, useEffect}from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate } from "react-router-dom";
 import StudentDetails from "./StudentDetails";
 import axios from "axios";
 import '../CSS/StudentNav.css'
@@ -8,21 +8,30 @@ export default function StudentProfile(){
     const [student, setStudent] = useState(null);
     const { user_id } = useParams();
 
+    const navigate = useNavigate();
     useEffect(() => {
         
         const fetchData = async () => {
           try {
-            const retrieveStudent = await axios.get(`http://localhost:8080/student/get/${user_id}`,{
+            const response = await fetch(`http://localhost:8080/student/get/${user_id}`, {
+              method: 'GET',
               headers: {
-                  'Content-Type' : 'application/json',
-                  Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                'Content-Type': 'application/json',
+                
               },
-          });
-            const studentData = retrieveStudent.data;
-            setStudent(studentData)
-            
+              credentials: 'include', 
+            });
+          
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+          
+            const responseData = await response.json();
+            setStudent(responseData)
+            console.log('Data:', responseData);
           } catch (error) {
             console.error('Error fetching data:', error.message);
+            navigate(`/register/student/${user_id}`)
           }
         };
     

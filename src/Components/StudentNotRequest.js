@@ -11,9 +11,11 @@ export default function StudentNotRequest(){
             if(user_id){
                 try{
                     const response = await fetch(`http://localhost:8080/teacher/not/get/request/${user_id}`,{
+                        method : 'GET',
                         headers : {
-                            Authorization : 'Bearer ' + localStorage.getItem('Token')
-                        }
+                            'Content-Type': 'application/json'
+                        },
+                        credentials : 'include'
                     });
               
                     const responseData = await response.json();

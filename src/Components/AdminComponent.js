@@ -9,7 +9,13 @@ export default function AdminComponent(){
     useEffect(() =>{
         const fetchData = async() =>{
             try{
-                const response = await fetch('http://localhost:8080/api/auth/findall');
+                const response = await fetch('http://localhost:8080/api/auth/findall',{
+                    method : 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials : 'include'
+                });
                 
                 
                 if (!response.ok) {
@@ -26,13 +32,6 @@ export default function AdminComponent(){
         }
         fetchData();
     }, [])
-
-
-    const handleLogout = (e) =>{
-        e.preventDefault();
-        localStorage.removeItem('Token');
-        navigate('/');
-    }
     
     return(
         <div style={{ textAlign: 'center' }}>
@@ -62,7 +61,7 @@ export default function AdminComponent(){
                     ))}
                 </tbody>
             </table>
-            <button id="admin-logout" onClick={handleLogout}>Logout</button>
+            
         </div>
 
     )

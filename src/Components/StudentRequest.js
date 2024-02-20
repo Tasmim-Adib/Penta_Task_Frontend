@@ -12,10 +12,11 @@ export default function StudentRequest(){
             if(user_id){
                 try{
                     const response = await fetch(`http://localhost:8080/teacher/get/request/${user_id}`,{
+                        method : 'GET',
                         headers: {
                             'Content-Type' : 'application/json',
-                            Authorization: 'Bearer ' + localStorage.getItem('Token'),
                         },
+                        credentials : 'include'
                     });
               
                     const responseData = await response.json();

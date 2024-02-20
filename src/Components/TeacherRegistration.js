@@ -5,7 +5,8 @@ import { useParams,useNavigate } from "react-router-dom";
 export default function TeacherRegistration(){
     const [inputValues, setInputValues] = useState({
         faculty_name: '',
-        designation: ''
+        designation: '',
+        phone : ''
     });
 
     const navigate = useNavigate();
@@ -27,23 +28,54 @@ export default function TeacherRegistration(){
             designation : inputValues.designation
         };
 
-        axios({
-            url : `http://localhost:8080/teacher/save/${user_id}`,
-            method : "POST",
-            data : payload,
+        fetch(`http://localhost:8080/teacher/save/${user_id}`, {
+            method: 'POST',
             headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                'Content-Type': 'application/json',
             },
-        }).then(response => {
-            console.log('Data posted successfully:', response.data);
-            navigate(`/teacher/${user_id}`);
-            
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
-            console.error('Error posting data:', error);
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                navigate(`/teacher/${user_id}`);
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+            });
+
             
-        });
+            const phoneData = {
+                phone : inputValues.phone
+            };
+    
+            fetch(`http://localhost:8080/api/auth/update/phone/${user_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(phoneData),
+                credentials : 'include'
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    
+                })
+                .then((data) => {
+                    console.log('Data posted successfully:', data);
+                    
+                })
+                .catch((error) => {
+                    console.error('Error posting data:', error);
+                });
     }
 
     const handleGoBack = (e) =>{
@@ -57,6 +89,7 @@ export default function TeacherRegistration(){
                 <form onSubmit={handleSubmit}>
                     <input type="text" name="faculty_name" placeholder='Faculty Name' value={inputValues.faculty_name} onChange={handleInputChange}/>
                     <input type="text" name="designation" placeholder='Designation' value={inputValues.designation} onChange={handleInputChange}/>
+                    <input type="text" name="phone" placeholder='Phone' value={inputValues.phone} onChange={handleInputChange}/>
                     <button type="submit">Save</button>
                 </form>
             </div>

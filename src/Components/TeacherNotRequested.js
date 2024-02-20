@@ -12,14 +12,22 @@ export default function TeacherNotRequested(){
         const fetchData = async () => {
             if(teacher_user_id){
                 try {
-                    const retrieveTeacher = await axios.get(`http://localhost:8080/teacher/get/${teacher_user_id}`,{
+                    const response = await fetch(`http://localhost:8080/teacher/get/${teacher_user_id}`,{
+                        method : 'GET',
                         headers: {
                             'Content-Type' : 'application/json',
-                            Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                            
                         },
+                        credentials : 'include'
                     });
-                    const teacherData = retrieveTeacher.data;
-                    setTeacher(teacherData)
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                      }
+
+                      const responseData = await response.json();
+
+                    setTeacher(responseData)
                     
                 } catch (error) {
                     console.error('Error fetching data:', error.message);
@@ -42,24 +50,29 @@ export default function TeacherNotRequested(){
             student_user_id : student_user_id,
             teacher_user_id : teacher_user_id
         }
-        axios({
-            url : 'http://localhost:8080/studTeacherReq/save',
-            method : "POST",
-            data : payload,
+
+        fetch('http://localhost:8080/studTeacherReq/save', {
+            method: 'POST',
             headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                'Content-Type': 'application/json',
             },
-        }).then(response => {
-            console.log('Data posted successfully:', response.data);
-            setError(response.data);
-            
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
-            console.error('Error posting data:', error);
-            setError(error.message)
-            
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                setError("Request Sent")
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+                setError(error.message)
+            });
     }
     return(
         <div className="Teacher-Details">

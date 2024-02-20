@@ -1,28 +1,36 @@
 
 import React , {useState, useEffect}from "react";
-import { useParams,Link } from "react-router-dom";
+import { useParams,Link,useNavigate } from "react-router-dom";
 import TeacherDetails from "./TeacherDetails";
-import axios from "axios";
+
 
 export default function TeacherProfile(){
     const [teacher, setTeacher] = useState(null);
     const { user_id } = useParams();
-
+    const navigate = useNavigate();
     useEffect(() => {
         
         const fetchData = async () => {
           try {
-            const retrieveTeacher = await axios.get(`http://localhost:8080/teacher/get/${user_id}`,{
+            const response = await fetch(`http://localhost:8080/teacher/get/${user_id}`,{
+              method : 'GET',
               headers: {
                 'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                
               },
+              credentials : 'include'
             });
-            const teacherData = retrieveTeacher.data;
-            setTeacher(teacherData)
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const responseData = await response.json();
+            setTeacher(responseData)
+            console.log('Data:', responseData);
             
           } catch (error) {
             console.error('Error fetching data:', error.message);
+            navigate(`/register/teacher/${user_id}`)
           }
         };
     

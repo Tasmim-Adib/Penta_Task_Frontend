@@ -12,11 +12,12 @@ export default function TeacherUpdate(){
         const fetchData = async () => {
             try {
                 
-                const response = await axios.get(`http://localhost:8080/teacher/get/${user_id}`,{
+                const response = await fetch(`http://localhost:8080/teacher/get/${user_id}`,{
+                    method : 'GET',
                     headers: {
                         'Content-Type' : 'application/json',
-                        Authorization: 'Bearer ' + localStorage.getItem('Token'),
                     },
+                    credentials : 'include'
                 });
                 const data = response.data;
                 setDefaultValue(data);
@@ -47,22 +48,30 @@ export default function TeacherUpdate(){
             designation : defaultValue.designation           
         };
 
-        axios({
-            url : `http://localhost:8080/teacher/update/${defaultValue.user_id}`,
-            method : "PUT",
-            data : payload,
+        fetch(`http://localhost:8080/teacher/update/${defaultValue.user_id}`, {
+            method: 'PUT',
             headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                'Content-Type': 'application/json',
             },
-        }).then(response => {
-            console.log('Data Updated successfully:', response.data);
-            setResponseMessage(response.data)
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+        })
+        .then((data) => {
+            console.log('Data posted successfully:', data);
+            setResponseMessage('Updated Successfully')
+            
+        })
+        .catch((error) => {
             console.error('Error posting data:', error);
-            setResponseMessage(error)
+            setResponseMessage(error.message)
         });
+        
     }
 
     const handleBackToProfile =(e) =>{

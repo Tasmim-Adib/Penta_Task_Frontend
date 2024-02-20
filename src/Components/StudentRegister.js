@@ -7,7 +7,8 @@ export default function StudentRegister(){
     const [inputValues, setInputValues] = useState({
         department_name: '',
         batch_no: '',
-        student_id: ''
+        student_id: '',
+        phone : ''
     });
 
     const navigate = useNavigate();
@@ -30,23 +31,55 @@ export default function StudentRegister(){
             student_id : inputValues.student_id
         };
 
-        axios({
-            url : `http://localhost:8080/student/save/${user_id}`,
-            method : "POST",
-            data : payload,
+
+        fetch(`http://localhost:8080/student/save/${user_id}`, {
+            method: 'POST',
             headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                'Content-Type': 'application/json',
             },
-        }).then(response => {
-            console.log('Data posted successfully:', response.data);
-            navigate(`/student/${user_id}`);
-            
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
-            console.error('Error posting data:', error);
-            
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                navigate(`/student/${user_id}`);
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+            });
+
+        
+        const phoneData = {
+            phone : inputValues.phone
+        };
+
+        fetch(`http://localhost:8080/api/auth/update/phone/${user_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(phoneData),
+            credentials : 'include'
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+            });
     };
     return(
         <div>
@@ -56,6 +89,7 @@ export default function StudentRegister(){
                     <input type="text" name="department_name" placeholder='Department Name' value={inputValues.department_name} onChange={handleInputChange}/>
                     <input type="text" name="student_id" placeholder='Student ID' value={inputValues.student_id} onChange={handleInputChange}/>
                     <input type="number" name="batch_no" placeholder='Batch No' value={inputValues.batch_no} onChange={handleInputChange}/>
+                    <input type="text" name="phone" placeholder='Phone' value={inputValues.phone} onChange={handleInputChange}/>
                     <button type="submit">Save</button>
                     
                 </form>

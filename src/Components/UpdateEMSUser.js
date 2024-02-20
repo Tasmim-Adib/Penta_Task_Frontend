@@ -26,26 +26,29 @@ export default function UpdateEMSUser(){
         const payload = {
             role_id : roleId
         }
-        axios({
-            url : `http://localhost:8080/admin/update/role/${user_id}`,
-            method : "PUT",
-            data : payload,
-            headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
-            },
 
-        }).then(response => {
-            if(response){
-                setError('Role Updated Successfully')   
-            }
-            else{
-                setError(response.data.error);
-            }
+        fetch(`http://localhost:8080/admin/update/role/${user_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload), 
+            credentials : 'include'
         })
-        .catch(error => {
-            setError(error.message)
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                setError('Role Updated Successfully')
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+                setError(error)
+            });
     };
 
     const handleStatusDEACTIVATE = async(e) =>{
@@ -53,26 +56,30 @@ export default function UpdateEMSUser(){
         const payload = {
             userStatus : 'DEACTIVE'
         }
-        axios({
-            url : `http://localhost:8080/admin/update/status/${user_id}`,
-            method : "PUT",
-            data : payload,
-            headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
-            },
 
-        }).then(response => {
-            if(response){
-                setError('Account Deactivated')
-            }
-            else{
-                setError(response.data.error);
-            }
+        fetch(`http://localhost:8080/admin/update/status/${user_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
-            setError(error.message)
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                setError('Account Deactivated')
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+                setError(error)
+            });
+        
     };
 
     const handleStatusACTIVATE = async(e) =>{
@@ -80,26 +87,30 @@ export default function UpdateEMSUser(){
         const payload = {
             userStatus : 'ACTIVE'
         }
-        axios({
-            url : `http://localhost:8080/admin/update/status/${user_id}`,
-            method : "PUT",
-            data : payload,
-            headers: {
-                'Content-Type' : 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
-            },
 
-        }).then(response => {
-            if(response){
-                setError('Account activated')
-            }
-            else{
-                setError(response.data.error);
-            }
+        fetch(`http://localhost:8080/admin/update/status/${user_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
-            setError(error.message)
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                setError('Account activated')
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+                setError(error)
+            });
+        
     };
 
     return(

@@ -11,12 +11,19 @@ export default function RequestedStudent(){
         const fetchData = async () => {
             if(student_user_id){
                 try {
-                    const retrieveStudent = await axios.get(`http://localhost:8080/student/get/${student_user_id}`,{
+                    const response = await fetch(`http://localhost:8080/student/get/${student_user_id}`,{
+                        method : 'GET',
                         headers : {
-                            Authorization : 'Bearer ' + localStorage.getItem('Token')
-                        }
+                            'Content-Type' : 'application/json',
+                        },
+                        credentials : 'include'
                     });
-                    const studentData = retrieveStudent.data;
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                      }
+
+                    const studentData = await response.json();
                     setStudent(studentData)
                     
                 } catch (error) {
@@ -38,23 +45,31 @@ export default function RequestedStudent(){
         const payload = {
             advisor : teacher_user_id
         }
-        axios({
-            url : `http://localhost:8080/student/update/advisor/${student_user_id}`,
-            method : "PUT",
-            data : payload,
-            headers : {
-                Authorization : 'Bearer ' + localStorage.getItem('Token')
-            }
-        }).then(response => {
-            console.log('Data posted successfully:', response.data);
-            setError('Added in your list')
-            
+
+        fetch(`http://localhost:8080/student/update/advisor/${student_user_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
-            console.error('Error posting data:', error);
-            setError(error)
-            
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                setError('Added in your list')
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+                setError(error)
+            });
+
+        
     }
 
     const handleDismiss = (e) =>{
@@ -65,23 +80,29 @@ export default function RequestedStudent(){
 
         }
 
-        axios({
-            url : `http://localhost:8080/studTeacherReq/delete/${teacher_user_id}`,
-            method : "DELETE",
-            data : payload,
-            headers : {
-                Authorization : 'Bearer ' + localStorage.getItem('Token')
-            }
-        }).then(response => {
-            console.log('Request Deleted successfully:', response.data);
-            setError('Delete From your Requested list')
-            
+        fetch(`http://localhost:8080/studTeacherReq/delete/${teacher_user_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            credentials : 'include'
         })
-        .catch(error => {
-            console.error('Error posting data:', error);
-            setError(error)
-            
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                setError('Deleted from your list')
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+                setError(error)
+            });
+        
         
     }
 

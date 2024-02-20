@@ -18,7 +18,13 @@ export default function ResetPassword(){
         const fetchData = async () => {
             if(email){
                 try {
-                    const response = await axios.get(`http://localhost:8080/api/auth/find/${email}`);
+                    const response = await fetch(`http://localhost:8080/api/auth/find/${email}`,{
+                        method : 'GET',
+                        headers : {
+                            'Content-type' : 'application/json'
+                        },
+                        credentials : 'include'
+                    });
                     const responseData = response.data;
                     setUser(responseData);
                     
@@ -44,24 +50,30 @@ export default function ResetPassword(){
             password : inputValues.password,
         };
 
-        axios({
-            url : `http://localhost:8080/api/auth/reset/password/${email}`,
-            method : "PUT",
-            data : payload,
-            headers : {
-                Authorization : 'Bearer ' + localStorage.getItem('Token')
+        fetch(`http://localhost:8080/api/auth/reset/password/${email}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+            credentials : 'include'
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-        }).then(response => {
-            console.log('Data posted successfully:', response.data);
-            setError('Password Reset Successful');
-            localStorage.removeItem('Token');
             
         })
-        .catch(error => {
+        .then((data) => {
+            console.log('Data posted successfully:', data);
+            setError('Password Reset Successful');
+            
+        })
+        .catch((error) => {
             console.error('Error posting data:', error);
             setError(error.message)
-            
         });
+        
     }
 
     const handleBackToLogin = (e) =>{

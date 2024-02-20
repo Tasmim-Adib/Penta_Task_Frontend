@@ -1,6 +1,5 @@
 import React,{useEffect,useState} from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 
 export default function MyStudent(){
     const [student, setStudent] = useState(null);
@@ -11,12 +10,18 @@ export default function MyStudent(){
         const fetchData = async () => {
             if(student_user_id){
                 try {
-                    const retrieveStudent = await axios.get(`http://localhost:8080/student/get/${student_user_id}`,{
+                    const response = await fetch(`http://localhost:8080/student/get/${student_user_id}`,{
+                        method : 'GET',
                         headers : {
-                            Authorization : 'Bearer ' + localStorage.getItem('Token')
-                        }
+                            'Content-Type': 'application/json',
+                        },
+                        credentials : 'include'
                     });
-                    const studentData = retrieveStudent.data;
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                      }
+                    const studentData = await response.json();
                     setStudent(studentData)
                     
                 } catch (error) {
@@ -37,23 +42,28 @@ export default function MyStudent(){
     const handleRemoveStudent = (e) =>{
         e.preventDefault();
 
-        axios({
-            url : `http://localhost:8080/student/remove/advisor/${student_user_id}`,
-            method : "PUT",
+        fetch(`http://localhost:8080/student/remove/advisor/${student_user_id}`, {
+            method: 'PUT',
             headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('Token'),
+                'Content-Type': 'application/json',
             },
-
-        }).then(response => {
-            console.log('Request Updated successfully:', response.data);
-            setError('Removed From your list')
-            
+            credentials : 'include'
         })
-        .catch(error => {
-            console.error('Error posting data:', error);
-            setError(error)
-            
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+            })
+            .then((data) => {
+                console.log('Data posted successfully:', data);
+                setError('Removed from your list')
+            })
+            .catch((error) => {
+                console.error('Error posting data:', error);
+                setError(error)
+            });
+    
         
     }
 
